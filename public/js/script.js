@@ -1,24 +1,20 @@
+// public/js/script.js
+
 (() => {
   'use strict'
-  const forms = document.querySelectorAll('form[data-bs-validate]')
-  for (const form of forms) {
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission if invalid
+  Array.from(forms).forEach(form => {
     form.addEventListener('submit', event => {
       if (!form.checkValidity()) {
         event.preventDefault()
         event.stopPropagation()
       }
-      for (const control of form.elements) {
-        if (control.willValidate) {
-          control.setAttribute('aria-invalid', String(!control.validity.valid))
-        }
-      }
-    })
-    // Clear aria-invalid as users correct individual fields
-    form.addEventListener('input', event => {
-      const control = event.target
-      if (control.willValidate && control.hasAttribute('aria-invalid')) {
-        control.setAttribute('aria-invalid', String(!control.validity.valid))
-      }
-    })
-  }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
 })()
