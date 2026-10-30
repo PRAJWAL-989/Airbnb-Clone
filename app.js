@@ -8,6 +8,8 @@ const Listing = require("./models/listing.js")
 
 const ejsMate = require("ejs-mate")
 
+const wrapAsync = require("./utils/wrapAsync.js")
+
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 
@@ -60,11 +62,11 @@ app.get("/listings/:id", async (req, res) => {
 
 
 //Create Route
-app.post("/listings", async (req, res) => {
-    const newListing = new Listing(req.body.listing)
-    await newListing.save();
-    res.redirect("/listings")
-})
+app.post("/listings", wrapAsync(async (req, res, next) => {
+        const newListing = new Listing(req.body.listing)
+        await newListing.save();
+        res.redirect("/listings")
+}))
 
 //Edit Route
 app.get("/listings/:id/edit", async(req, res) => {
@@ -105,6 +107,10 @@ app.delete("/listings/:id", async (req, res) => {
 
 // })
 
+
+app.use((err, req, res, next) => {
+    res.send("Something went wrong")
+})
 
 
 app.listen(8080, () => {
